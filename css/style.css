@@ -1,0 +1,9 @@
+h2 {
+  margin: 10px 0;
+}
+
+div.col-md-6 {
+  border-left-color: black;
+  border-left-style: solid;
+  border-left-width: medium;
+}
