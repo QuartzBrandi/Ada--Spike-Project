@@ -5,13 +5,15 @@ window.CustomersView = Backbone.View.extend({
 </button> \
 <div class="btn-group" role="group" aria-label="button group">\
 <a href="" class="btn btn-default disabled" role="button">Sort:</a>\
+<button type="button" class="btn btn-default sort-id">ID</button>\
 <button type="button" class="btn btn-default sort-name">Name</button>\
 </div>'
   ),
 
   events: {
     'click button.all': 'fetchAll',
-    'click button.sort-name': 'sortAll'
+    'click button.sort-id': 'sortId',
+    'click button.sort-name': 'sortName'
   },
 
   initialize: function() {
@@ -35,8 +37,25 @@ window.CustomersView = Backbone.View.extend({
     });
   },
 
-  sortAll: function() {
-    console.log("SORT");
+  sortId: function() {
+    this.sortAttr("id");
+  },
+
+  sortName: function() {
+    this.sortAttr("name");
+  },
+
+  sortAttr: function(attr) {
+    if (this.sortType == attr) {
+      var reverseCollection = this.collection.toJSON();
+      reverseCollection.reverse();
+      this.collection.reset(reverseCollection);
+    } else {
+      var orderedCollection = this.collection.sortBy(attr);
+      this.collection.reset(orderedCollection);
+      this.sortType = attr;
+    }
+    this.render();
   },
 
   addAll: function() {

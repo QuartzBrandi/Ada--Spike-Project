@@ -41,33 +41,28 @@ window.MoviesView = Backbone.View.extend({
   },
 
   sortTitle: function() {
-    if (this.sortType == "title") {
-      var reverseCollection = this.collection.toJSON();
-      reverseCollection.reverse();
-      this.collection.reset(reverseCollection);
-    } else {
-      var orderedCollection = this.collection.sortBy('title');
-      this.collection.reset(orderedCollection);
-      this.sortType = "title";
-    }
-    this.render();
+    this.sortAttr("title");
   },
 
   sortInventory: function() {
-    if (this.sortType == "inventory") {
+    this.sortAttr("inventory");
+  },
+
+  sortReleaseDate: function() {
+    this.sortAttr("release_date");
+  },
+
+  sortAttr: function(attr) {
+    if (this.sortType == attr) {
       var reverseCollection = this.collection.toJSON();
       reverseCollection.reverse();
       this.collection.reset(reverseCollection);
     } else {
-      var orderedCollection = this.collection.sortBy('inventory');
+      var orderedCollection = this.collection.sortBy(attr);
       this.collection.reset(orderedCollection);
-      this.sortType = "inventory";
+      this.sortType = attr;
     }
     this.render();
-  },
-
-  sortReleaseDate: function() {
-    console.log("SORTING");
   },
 
   addAll: function() {
