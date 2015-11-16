@@ -16,7 +16,7 @@
       return this.addAll();
     },
     fetchAll: function() {
-      return this.collection.fetch({
+      this.collection.fetch({
         success: _.bind(function(collection, response, options) {
           return this.render();
         }, this),
@@ -26,6 +26,7 @@
           return console.log("ERROR: OPTIONS", options);
         }, this)
       });
+      return this.fullCollection = this.collection;
     },
     sortTitle: function() {
       return this.sortAttr("title");

@@ -8,13 +8,28 @@ window.CustomersView = Backbone.View.extend
     <button type="button" class="btn btn-default sort-id">ID</button>\
     <button type="button" class="btn btn-default sort-name">Name</button>\
     </div>\
-    <div><input type="text" class="form-control" placeholder="Search for..."></div>'
+    <div><input type="text" class="form-control" placeholder="Search for..."></div>\
+    <div class="results"></div>'
   )
 
   events:
     'click button.all': 'fetchAll'
     'click button.sort-id': 'sortId'
     'click button.sort-name': 'sortName'
+    'keyup input': 'search'
+
+  search: (e) ->
+    # if e.which is 13
+    @updateAll()
+    searchQuery = @$el.find('input').val()
+    filteredCollection = _.filter(
+      @collection.models
+      (person) ->
+        return person.attributes.name.match(new RegExp(searchQuery, 'i'))
+      this
+    )
+    @collection.reset filteredCollection
+    @refreshList()
 
   initialize: ->
     # NOTHING RIGHT NOW
@@ -23,11 +38,21 @@ window.CustomersView = Backbone.View.extend
     @$el.html @template
     @addAll()
 
+  refreshList: (collection) ->
+    @$el.find('.results').empty()
+    @addAll()
+
   fetchAll: ->
+    _.bind(@fetching, this, @render)()
+
+  updateAll: ->
+    @fetching()
+
+  fetching: (callback) ->
     @collection.fetch
       success: _.bind(
         (collection, response, options) ->
-          @render()
+          _.bind(callback, this)() if callback
         this
       )
       error: _.bind(
@@ -53,7 +78,7 @@ window.CustomersView = Backbone.View.extend
       orderedCollection = @collection.sortBy attr
       @collection.reset orderedCollection
       @sortType = attr
-    @render()
+    @refreshList()
 
   addAll: ->
     @collection.forEach @addOne, this
@@ -61,4 +86,4 @@ window.CustomersView = Backbone.View.extend
   addOne: (customer) ->
     customerView = new CustomerView { model: customer }
     customerView.render()
-    @$el.append customerView.el
+    @$el.find('.results').append customerView.el

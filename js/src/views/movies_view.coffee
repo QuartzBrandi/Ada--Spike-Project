@@ -39,6 +39,7 @@ window.MoviesView = Backbone.View.extend
           console.log("ERROR: OPTIONS", options);
         this
       )
+    @fullCollection = @collection
 
   sortTitle: ->
     @sortAttr "title"
