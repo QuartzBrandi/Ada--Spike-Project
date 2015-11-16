@@ -8,7 +8,8 @@ window.MoviesView = Backbone.View.extend
     <button type="button" class="btn btn-default sort-title">Title</button>\
     <button type="button" class="btn btn-default sort-inventory">Inventory</button>\
     <button type="button" class="btn btn-default sort-release-date">Release Date</button>\
-    </div>'
+    </div>\
+    <div><input type="text" class="form-control" placeholder="Search for..."></div>'
   )
 
   events:
@@ -21,8 +22,8 @@ window.MoviesView = Backbone.View.extend
     @sortType
 
   render: ->
-    @$el.html(@template)
-    @addAll
+    @$el.html @template
+    @addAll()
 
   fetchAll: ->
     @collection.fetch
@@ -49,10 +50,10 @@ window.MoviesView = Backbone.View.extend
     if @sortType is attr
       reverseCollection = @collection.toJSON()
       reverseCollection.reverse()
-      @collection.reset(reverseCollection)
+      @collection.reset reverseCollection
     else
-      orderedCollection = @collection.sortBy(attr)
-      @collection.reset(orderedCollection)
+      orderedCollection = @collection.sortBy attr
+      @collection.reset orderedCollection
       @sortType = attr
     @render()
 
@@ -60,6 +61,6 @@ window.MoviesView = Backbone.View.extend
     @collection.forEach @addOne, this
 
   addOne: (movie) ->
-    movieView = new MovieView {model: movie}
+    movieView = new MovieView { model: movie }
     movieView.render()
-    @$el.append(movieView.el)
+    @$el.append movieView.el

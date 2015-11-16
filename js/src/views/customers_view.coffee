@@ -7,7 +7,8 @@ window.CustomersView = Backbone.View.extend
     <a href="" class="btn btn-default disabled" role="button">Sort:</a>\
     <button type="button" class="btn btn-default sort-id">ID</button>\
     <button type="button" class="btn btn-default sort-name">Name</button>\
-    </div>'
+    </div>\
+    <div><input type="text" class="form-control" placeholder="Search for..."></div>'
   )
 
   events:
