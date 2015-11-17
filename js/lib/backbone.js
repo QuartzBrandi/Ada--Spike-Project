@@ -1018,16 +1018,19 @@
     // collection when they arrive. If `reset: true` is passed, the response
     // data will be passed through the `reset` method instead of `set`.
     fetch: function(options) {
+      console.log("000")
       options = _.extend({parse: true}, options);
       var success = options.success;
       var collection = this;
       options.success = function(resp) {
+        console.log("111")
         var method = options.reset ? 'reset' : 'set';
         collection[method](resp, options);
         if (success) success.call(options.context, collection, resp, options);
         collection.trigger('sync', collection, resp, options);
       };
       wrapError(this, options);
+      console.log("222");
       return this.sync('read', this, options);
     },
 
@@ -1354,6 +1357,7 @@
   // Useful when interfacing with server-side languages like **PHP** that make
   // it difficult to read the body of `PUT` requests.
   Backbone.sync = function(method, model, options) {
+    console.log("sync")
     var type = methodMap[method];
 
     // Default options, unless specified.
@@ -1410,6 +1414,7 @@
     // Make the request, allowing the user to override any Ajax options.
     var xhr = options.xhr = Backbone.ajax(_.extend(params, options));
     model.trigger('request', model, xhr, options);
+    console.log("syncend")
     return xhr;
   };
 

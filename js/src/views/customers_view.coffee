@@ -21,19 +21,19 @@ window.CustomersView = Backbone.View.extend
 
   search: (e) ->
     # if e.which is 13
-    console.log("WHY")
+    console.log("BEFORE ANYTHING", @collection)
     # @fetching(-> console.log("yo"));
-    @fetching =>
-      searchQuery = @$el.find('input').val()
-      filteredArray = _.filter(
-        @collection.models
-        (person) ->
-          return person.attributes.name.match(new RegExp(searchQuery, 'i'))
-      )
-      console.log("BEFORE COLLECTION FILTERED", @collection)
-      @collection.reset filteredArray
-      @refreshList()
-      console.log("COLLECTION FILTERED", @collection)
+    @fetching()
+    searchQuery = @$el.find('input').val()
+    filteredArray = _.filter(
+      @collection.models
+      (person) ->
+        return person.attributes.name.match(new RegExp(searchQuery, 'i'))
+    )
+    console.log("BEFORE COLLECTION FILTERED", @collection)
+    @collection.reset filteredArray
+    @refreshList()
+    console.log("COLLECTION FILTERED", @collection)
 
   initialize: ->
     @collection.on('reset', -> console.log("reset"))
@@ -57,15 +57,14 @@ window.CustomersView = Backbone.View.extend
     @fetching()
 
   fetching: (callback) ->
-    console.log("thing")
-    console.log("collection", @collection)
+    console.log("fetching", @collection)
     # console.log("collection", @collection)
     @collection.fetch
       success: (collection, response, options) =>
         callback() if callback
         # @refreshList()
         # _.bind(callback, this)() if callback
-        # console.log("ehy")
+        console.log("inside")
 
       # error: _.bind(
       #   (collection, response, options) ->
