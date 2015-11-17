@@ -8,18 +8,18 @@
       'click button.sort-name': 'sortName',
       'keyup input.search-field': 'search'
     },
-    search: function(e) {
-      var filteredArray, searchQuery;
-      console.log("BEFORE ANYTHING", this.collection);
-      this.fetching();
-      searchQuery = this.$el.find('input').val();
-      filteredArray = _.filter(this.collection.models, function(person) {
-        return person.attributes.name.match(new RegExp(searchQuery, 'i'));
-      });
-      console.log("BEFORE COLLECTION FILTERED", this.collection);
-      this.collection.reset(filteredArray);
-      this.refreshList();
-      return console.log("COLLECTION FILTERED", this.collection);
+    search: function() {
+      return this.fetching((function(_this) {
+        return function() {
+          var filteredArray, searchQuery;
+          searchQuery = _this.$el.find('input').val();
+          filteredArray = _.filter(_this.collection.models, function(person) {
+            return person.attributes.name.match(new RegExp(searchQuery, 'i'));
+          });
+          _this.collection.reset(filteredArray);
+          return _this.refreshList();
+        };
+      })(this));
     },
     initialize: function() {
       this.collection.on('reset', function() {
@@ -44,24 +44,20 @@
       return this.fetching();
     },
     fetching: function(callback) {
-      console.log("fetching", this.collection);
       return this.collection.fetch({
         success: (function(_this) {
           return function(collection, response, options) {
             if (callback) {
-              callback();
+              return callback();
             }
-            return console.log("inside");
           };
         })(this)
       });
     },
     sortId: function() {
-      console.log("SORT COLLECTION", this.collection);
       return this.sortAttr("id");
     },
     sortName: function() {
-      console.log("SORT COLLECTION", this.collection);
       return this.sortAttr("name");
     },
     sortAttr: function(attr) {

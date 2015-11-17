@@ -13,27 +13,21 @@ window.CustomersView = Backbone.View.extend
   )
 
   events:
-    # 'click button.all': -> @fetching()
     'click button.all': 'fetchAll'
     'click button.sort-id': 'sortId'
-    'click button.sort-name': 'sortName'#-> debugger; @sortName()
+    'click button.sort-name': 'sortName'
     'keyup input.search-field': 'search'
 
-  search: (e) ->
-    # if e.which is 13
-    console.log("BEFORE ANYTHING", @collection)
-    # @fetching(-> console.log("yo"));
-    @fetching()
-    searchQuery = @$el.find('input').val()
-    filteredArray = _.filter(
-      @collection.models
-      (person) ->
-        return person.attributes.name.match(new RegExp(searchQuery, 'i'))
-    )
-    console.log("BEFORE COLLECTION FILTERED", @collection)
-    @collection.reset filteredArray
-    @refreshList()
-    console.log("COLLECTION FILTERED", @collection)
+  search: ->
+    @fetching =>
+      searchQuery = @$el.find('input').val()
+      filteredArray = _.filter(
+        @collection.models
+        (person) ->
+          return person.attributes.name.match(new RegExp(searchQuery, 'i'))
+      )
+      @collection.reset filteredArray
+      @refreshList()
 
   initialize: ->
     @collection.on('reset', -> console.log("reset"))
@@ -57,14 +51,11 @@ window.CustomersView = Backbone.View.extend
     @fetching()
 
   fetching: (callback) ->
-    console.log("fetching", @collection)
-    # console.log("collection", @collection)
     @collection.fetch
       success: (collection, response, options) =>
         callback() if callback
         # @refreshList()
         # _.bind(callback, this)() if callback
-        console.log("inside")
 
       # error: _.bind(
       #   (collection, response, options) ->
@@ -73,25 +64,20 @@ window.CustomersView = Backbone.View.extend
       #     console.log "ERROR: OPTIONS", options
       #   this
       # )
-    # return "O"
 
   sortId: ->
-    console.log("SORT COLLECTION", @collection)
     @sortAttr "id"
 
   sortName: ->
-    console.log("SORT COLLECTION", @collection)
     @sortAttr "name"
 
   sortAttr: (attr) ->
     if @sortType is attr
       reverseCollection = @collection.toJSON()
-      # console.log("REVERSE COLLECTION", reverseCollection);
       reverseCollection.reverse()
       @collection.reset reverseCollection
     else
       orderedCollection = @collection.sortBy attr
-      # console.log("ORDRED COLLECTION", orderedCollection);
       @collection.reset orderedCollection
       @sortType = attr
     @refreshList()
