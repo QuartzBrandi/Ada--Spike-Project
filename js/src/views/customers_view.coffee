@@ -21,49 +21,35 @@ window.CustomersView = Backbone.View.extend
   search: ->
     @fetching =>
       searchQuery = @$el.find('input').val()
-      filteredArray = _.filter(
-        @collection.models
+      filteredArray = @collection.models.filter(
         (person) ->
           return person.attributes.name.match(new RegExp(searchQuery, 'i'))
       )
       @collection.reset filteredArray
-      @refreshList()
+      @renderList()
 
   initialize: ->
-    @collection.on('reset', -> console.log("reset"))
-    @collection.on('change', -> console.log("change"))
-    # @collection.on
     # NOTHING RIGHT NOW
 
   render: ->
     @$el.html @template
     @addAll()
 
-  refreshList: (collection) ->
+  renderList: ->
     @$el.find('.results').empty()
     @addAll()
 
   fetchAll: ->
-    @fetching(@refreshList.bind(this))
-    # _.bind(@fetching, this, @render)()
-
-  updateAll: ->
-    @fetching()
+    @fetching(@renderList.bind(this))
 
   fetching: (callback) ->
     @collection.fetch
       success: (collection, response, options) =>
         callback() if callback
-        # @refreshList()
-        # _.bind(callback, this)() if callback
-
-      # error: _.bind(
-      #   (collection, response, options) ->
-      #     console.log "ERROR: COLLECITON", collection
-      #     console.log "ERROR: RESPONSE", response
-      #     console.log "ERROR: OPTIONS", options
-      #   this
-      # )
+      error: (collection, response, options) =>
+        console.log "ERROR: COLLECITON", collection
+        console.log "ERROR: RESPONSE", response
+        console.log "ERROR: OPTIONS", options
 
   sortId: ->
     @sortAttr "id"
@@ -80,7 +66,7 @@ window.CustomersView = Backbone.View.extend
       orderedCollection = @collection.sortBy attr
       @collection.reset orderedCollection
       @sortType = attr
-    @refreshList()
+    @renderList()
 
   addAll: ->
     @collection.forEach @addOne, this

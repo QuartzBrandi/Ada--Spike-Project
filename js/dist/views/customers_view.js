@@ -13,35 +13,25 @@
         return function() {
           var filteredArray, searchQuery;
           searchQuery = _this.$el.find('input').val();
-          filteredArray = _.filter(_this.collection.models, function(person) {
+          filteredArray = _this.collection.models.filter(function(person) {
             return person.attributes.name.match(new RegExp(searchQuery, 'i'));
           });
           _this.collection.reset(filteredArray);
-          return _this.refreshList();
+          return _this.renderList();
         };
       })(this));
     },
-    initialize: function() {
-      this.collection.on('reset', function() {
-        return console.log("reset");
-      });
-      return this.collection.on('change', function() {
-        return console.log("change");
-      });
-    },
+    initialize: function() {},
     render: function() {
       this.$el.html(this.template);
       return this.addAll();
     },
-    refreshList: function(collection) {
+    renderList: function() {
       this.$el.find('.results').empty();
       return this.addAll();
     },
     fetchAll: function() {
-      return this.fetching(this.refreshList.bind(this));
-    },
-    updateAll: function() {
-      return this.fetching();
+      return this.fetching(this.renderList.bind(this));
     },
     fetching: function(callback) {
       return this.collection.fetch({
@@ -50,6 +40,13 @@
             if (callback) {
               return callback();
             }
+          };
+        })(this),
+        error: (function(_this) {
+          return function(collection, response, options) {
+            console.log("ERROR: COLLECITON", collection);
+            console.log("ERROR: RESPONSE", response);
+            return console.log("ERROR: OPTIONS", options);
           };
         })(this)
       });
@@ -71,7 +68,7 @@
         this.collection.reset(orderedCollection);
         this.sortType = attr;
       }
-      return this.refreshList();
+      return this.renderList();
     },
     addAll: function() {
       return this.collection.forEach(this.addOne, this);
